@@ -1,0 +1,40 @@
+GET http://localhost:8080/resource
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.2.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=02835B334F2854040FBE5335B8950DC6; JSESSIONID=A61CD07B1504B4D4B747FAE3AE5CB374
+
+###
+
+GET http://localhost:8080/resource
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.2.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=A61CD07B1504B4D4B747FAE3AE5CB374
+
+###
+
+GET http://localhost:8080/resource
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.2.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=02835B334F2854040FBE5335B8950DC6
+
+###
+
+GET http://localhost:8080/resource
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.2.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+cookie: JSESSIONID=02835B334F2854040FBE5335B8950DC6
+
+###
+
+GET http://localhost:8080/resource
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.2.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+cookie: JSESSIONID=02835B334F2854040FBE5335B8950DC6
+
+###
+
