@@ -4,20 +4,12 @@ import { Router } from '@angular/router';
 import { Auth } from '../../auth';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 @Component({
   selector: 'app-register',
   imports: [
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    MatProgressSpinnerModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule
   ],
   templateUrl: './register.html',
   styleUrl: './register.scss'

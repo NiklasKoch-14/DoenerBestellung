@@ -33,18 +33,19 @@ public class AuthService {
     private UserRepository users;
 
     public Map<Object, Object> login(AuthBody data) {
+        Map<Object, Object> model = new HashMap<>();
         try {
             String username = data.getUsername();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
             String token = jwtTokenProvider.createToken(username, this.users.findUserByUsername(username).getRoles());
-            Map<Object, Object> model = new HashMap<>();
             model.put("username", username);
             model.put("token", token);
             log.info("Session mit username {} und token {} wurde erstellt", username, token);
-            return model;
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid email/password supplied ", e);
+            log.error("Invalid username/password supplied ");
+            model.put("errorMessage", "Username oder Passwort falsch");
         }
+        return model;
     }
 
     public Map<Object, Object> register(UserDTO userDTO) {

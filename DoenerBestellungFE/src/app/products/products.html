@@ -1,9 +1,5 @@
-<div class="example-container mat-elevation-z8">
-  <div class="mat-elevation-z8">
-      @for (row of data | async; track row) {
-      <div>{{row.name}}</div>
-      <div>{{row.price}}</div>
-      }
-  </div>
-  <div (click)="logout()">Logout</div>
-</div>
+@for (row of data | async; track row) {
+  <div>{{row.name}}</div>
+  <div>{{row.price}}</div>
+}
+<div (click)="logout()">Logout</div>

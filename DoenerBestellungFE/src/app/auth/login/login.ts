@@ -4,10 +4,7 @@ import { FormBuilder, FormControl, FormGroup, FormGroupDirective, FormsModule, N
 import { Router } from '@angular/router';
 import { Auth } from '../../auth';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import {MatInput} from '@angular/material/input';
 
 @Component({
   selector: 'app-login',
@@ -15,10 +12,7 @@ import { MatInputModule } from '@angular/material/input';
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    MatProgressSpinnerModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule
+    MatInput,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
@@ -31,6 +25,7 @@ export class Login {
   });
   username = '';
   password = '';
+  errorMessage?: string;
   matcher = new MyErrorStateMatcher();
   isLoadingResults = false;
 
@@ -44,6 +39,10 @@ export class Login {
       .subscribe({
         next: (res) => {
           console.log("Login Response ", res);
+          if(res.errorMessage) {
+            this.errorMessage = res.errorMessage;
+            console.log(this.errorMessage)
+          }
           if (res.token) {
             sessionStorage.setItem('token', res.token);
             console.log('token: ', sessionStorage.getItem('token'));

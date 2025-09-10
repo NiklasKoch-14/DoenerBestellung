@@ -12,6 +12,7 @@ const apiUrl = 'http://localhost:8080/api/auth/';
 export class Auth {
 
   isLoggedIn = false;
+  currentUser?: string;
   redirectUrl: string | undefined;
 
   private http = inject(HttpClient);
@@ -20,9 +21,12 @@ export class Auth {
   login(data: any): Observable<any> {
     return this.http.post<any>(apiUrl + 'login', data)
       .pipe(
-        tap(_ => {
+        tap(res => {
           this.isLoggedIn = true;
           console.log("LoggedIn ", this.isLoggedIn);
+          if(res.username) {
+            this.currentUser = res.username;
+          }
         }),
         catchError(this.handleError('login', []))
       );
@@ -55,6 +59,10 @@ export class Auth {
         tap(_ => this.log('login')),
         catchError(this.handleError('login', []))
       );
+  }
+
+  getCurrentUser(): string | undefined {
+    return this.currentUser;
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
