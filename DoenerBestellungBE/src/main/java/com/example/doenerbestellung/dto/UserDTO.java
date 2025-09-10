@@ -1,11 +1,12 @@
-package com.example.doenerbestellung.controller;
+package com.example.doenerbestellung.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthBody {
+public class UserDTO {
     private String username;
     private String password;
+    private String email;
 }

@@ -1,5 +1,6 @@
-import {Component, inject} from '@angular/core';
-import {Product} from '../product';
+import {Component, inject, OnInit} from '@angular/core';
+import {ProductService} from '../productService';
+import {Product} from './Product';
 import { Auth } from '../auth';
 import { Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-products',
@@ -30,38 +32,20 @@ import { CommonModule } from '@angular/common';
   templateUrl: './products.html',
   styleUrl: './products.scss'
 })
-export class Products {
+export class Products implements OnInit {
 
-  private productService = inject(Product)
+  private productService = inject(ProductService)
   private authService = inject(Auth)
   private router = inject(Router)
 
-  data: Product[] = [];
-  displayedColumns: string[] = ['prodName', 'prodDesc', 'prodPrice'];
-  isLoadingResults = true;
-
-  getProducts(): void {
-    this.productService.getProducts()
-      .subscribe({
-        next: (products) => {
-          this.data = products;
-          console.log(this.data);
-          this.isLoadingResults = false;
-        },
-        error: (err) => {
-          console.log(err);
-          this.isLoadingResults = false;
-        }
-      });
-  }
+  data?: Observable<Product[]>;
 
   ngOnInit() {
-    this.getProducts();
+    this.data = this.productService.getProducts();
   }
 
   logout() {
-    localStorage.removeItem('token');
-    this.router.navigate(['login']);
+    this.authService.logout()
   }
 
 }

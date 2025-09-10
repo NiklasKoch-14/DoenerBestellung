@@ -1,11 +1,14 @@
 package com.example.doenerbestellung.service;
 
 import com.example.doenerbestellung.entity.Role;
+import io.jsonwebtoken.Jws;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.crypto.SecretKey;
@@ -26,12 +29,13 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
     @Value("${security.jwt.token.secret-key}")
     private String secret;
 
-    @Value("${security.jwt.token.expire-length:3600000}")
+    @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
     private SecretKey secretKey;
@@ -57,10 +61,7 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + validityInMilliseconds);
 
-        /*Claims claims = Jwts.claims().add("roles", roles).subject(username).build();*/
-
-        // signWith(Key) is now preferred and auto-selects algorithm
-        return Jwts.builder()
+        return "Bearer " + Jwts.builder()
                 .claim("roles", roles)
                 .subject(username)
                 .issuedAt(now)
@@ -75,14 +76,11 @@ public class JwtTokenProvider {
     }
 
     public String getUsername(String token) {
-        Key key = Keys.hmacShaKeyFor(secretKey.getEncoded());
-        Claims claims = ((JwtParserBuilder) Jwts.builder()
-                .signWith(key))
+        return Jwts.parser()
+                .verifyWith(secretKey)
                 .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .parseSignedClaims(token).getPayload().getSubject();
 
-        return claims.getSubject(); // Returns username
     }
 
     public String resolveToken(HttpServletRequest req) {
@@ -92,16 +90,14 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Key key = Keys.hmacShaKeyFor(secretKey.getEncoded());
 
-            var claims = ((JwtParserBuilder) Jwts
-                    .builder()
-                    .signWith(key))
+            Jws<Claims> jwts = Jwts.parser()
+                    .verifyWith(secretKey)
                     .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-
-            return !claims.getExpiration().before(new Date());
+                    .parseSignedClaims(token);
+            log.info(String.valueOf(jwts.getPayload().getExpiration()));
+            log.info(String.valueOf(!jwts.getPayload().getExpiration().before(new Date())));
+            return true;
 
         } catch (JwtException | IllegalArgumentException e) {
             throw new JwtException("Expired or invalid JWT token", e);

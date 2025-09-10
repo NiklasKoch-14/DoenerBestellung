@@ -1,6 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
+import {Router} from '@angular/router';
 
 const apiUrl = 'http://localhost:8080/api/auth/';
 
@@ -9,24 +10,43 @@ const apiUrl = 'http://localhost:8080/api/auth/';
   providedIn: 'root'
 })
 export class Auth {
+
   isLoggedIn = false;
   redirectUrl: string | undefined;
+
   private http = inject(HttpClient);
+  private router = inject(Router);
 
   login(data: any): Observable<any> {
     return this.http.post<any>(apiUrl + 'login', data)
       .pipe(
-        tap(_ => this.isLoggedIn = true),
+        tap(_ => {
+          this.isLoggedIn = true;
+          console.log("LoggedIn ", this.isLoggedIn);
+        }),
         catchError(this.handleError('login', []))
       );
   }
 
-  logout(): Observable<any> {
-    return this.http.get<any>(apiUrl + 'signout')
+  logout(){
+    return this.http.post<any>(apiUrl + 'signout', undefined)
       .pipe(
-        tap(_ => this.isLoggedIn = false),
+        tap(_ => {
+          this.isLoggedIn = false;
+          console.log("LoggedIn ", this.isLoggedIn);
+          sessionStorage.clear();
+          console.log("removed token")
+        }),
         catchError(this.handleError('logout', []))
-      );
+      ).subscribe({
+        next: (res) => {
+          console.log("Logout ", res)
+          this.router.navigate(['login'])
+        },
+        error: (err) => {
+          console.log("error ", err)
+        }
+      })
   }
 
   register(data: any): Observable<any> {

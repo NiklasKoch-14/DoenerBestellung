@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "*")
+import java.util.List;
+
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class ProductController {
 
@@ -17,7 +19,7 @@ public class ProductController {
     ProductRepository productRepository;
 
     @RequestMapping(method = RequestMethod.GET, value = "/products")
-    public Iterable<Product> product() {
+    public List<Product> product() {
         return productRepository.findAll();
     }
 }

@@ -43,9 +43,10 @@ export class Login {
     this.authService.login(value)
       .subscribe({
         next: (res) => {
-          console.log(res);
+          console.log("Login Response ", res);
           if (res.token) {
-            localStorage.setItem('token', res.token);
+            sessionStorage.setItem('token', res.token);
+            console.log('token: ', sessionStorage.getItem('token'));
             this.router.navigate(['products']);
           }
         },
@@ -58,7 +59,10 @@ export class Login {
   register() {
     this.router.navigate(['register']);
   }
-
+  printSessiontoken() {
+    console.log(sessionStorage.getItem('token'))
+    console.log(this.authService.isLoggedIn)
+  }
 }
 
 /** Error when invalid control is dirty, touched, or submitted. */

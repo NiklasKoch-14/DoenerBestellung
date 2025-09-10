@@ -1,11 +1,13 @@
 package com.example.doenerbestellung.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.example.doenerbestellung.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,6 +23,8 @@ import com.example.doenerbestellung.entity.Role;
 import com.example.doenerbestellung.repositories.RoleRepository;
 import com.example.doenerbestellung.repositories.UserRepository;
 
+import static java.lang.Thread.sleep;
+
 @Slf4j
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -35,22 +39,21 @@ public class CustomUserDetailsService implements UserDetailsService {
     private PasswordEncoder bCryptPasswordEncoder;
 
 
-    public void saveUser(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setEnabled(true);
+    public User saveUser(UserDTO userDTO) {
+        User userToSave = new User();
+        userToSave.setUsername(userDTO.getUsername());
+        userToSave.setEmail(userDTO.getEmail());
+        userToSave.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
+        userToSave.setEnabled(true);
         Role userRole = roleRepository.findByRole("ADMIN");
-        log.info(userRole.toString());
-        user.setRoles(new HashSet<>(Collections.singletonList(userRole)));
-        log.info(userRole.getRole());
-        log.info(user.getRoles().toString());
-        log.info(user.toString());
-        userRepository.save(user);
+        userToSave.setRoles(new HashSet<>(List.of(userRole)));
+        return userRepository.save(userToSave);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findUserByUsername(username);
         if (user != null) {
             List<GrantedAuthority> authorities = getUserAuthority(user.getRoles());
             return buildUserForAuthentication(user, authorities);
@@ -60,7 +63,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public User findUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findUserByUsername(username);
     }
 
     private List<GrantedAuthority> getUserAuthority(Set<Role> userRoles) {
