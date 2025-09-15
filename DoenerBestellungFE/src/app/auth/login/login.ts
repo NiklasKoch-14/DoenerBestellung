@@ -2,7 +2,7 @@ import {Component, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Auth } from '../../auth';
+import { Auth } from '../../services/auth';
 import { ErrorStateMatcher } from '@angular/material/core';
 import {MatInput} from '@angular/material/input';
 
@@ -45,6 +45,7 @@ export class Login {
           }
           if (res.token) {
             sessionStorage.setItem('token', res.token);
+            this.authService.currentUsername = res.username;
             console.log('token: ', sessionStorage.getItem('token'));
             this.router.navigate(['products']);
           }
@@ -58,6 +59,7 @@ export class Login {
   register() {
     this.router.navigate(['register']);
   }
+
   printSessiontoken() {
     console.log(sessionStorage.getItem('token'))
     console.log(this.authService.isLoggedIn)

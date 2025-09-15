@@ -95,8 +95,6 @@ public class JwtTokenProvider {
                     .verifyWith(secretKey)
                     .build()
                     .parseSignedClaims(token);
-            log.info(String.valueOf(jwts.getPayload().getExpiration()));
-            log.info(String.valueOf(!jwts.getPayload().getExpiration().before(new Date())));
             return true;
 
         } catch (JwtException | IllegalArgumentException e) {

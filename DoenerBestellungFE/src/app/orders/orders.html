@@ -1,0 +1,27 @@
+<p-table [value]="(orders | async)!" dataKey="username" [expandedRowKeys]="expandedRows"
+         (onRowExpand)="onRowExpand($event)" (onRowCollapse)="onRowCollapse($event)">
+  <ng-template #body let-order let-expanded="expanded">
+    <tr>
+      <td [pRowToggler]="order">{{ order.username }}</td>
+    </tr>
+  </ng-template>
+  <ng-template #expandedrow let-order>
+    <tr>
+      <td colspan="7">
+        <p-table [value]="order.products" dataKey="id">
+          <ng-template #body let-product>
+            <tr>
+              <td>{{ product.name }}</td>
+              <td>{{ product.description }}</td>
+              <td>{{ product.price }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-button (click)="products()">Produkte</p-button>
+
+

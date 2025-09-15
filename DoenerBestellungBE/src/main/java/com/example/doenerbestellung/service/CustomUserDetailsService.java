@@ -1,8 +1,6 @@
 package com.example.doenerbestellung.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,22 +36,29 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
 
+    public List<User> findAllByDefaultOrderIsNotNull() {
+        return this.userRepository.findAllByDefaultOrderIsNotNull();
+    }
 
     public User saveUser(UserDTO userDTO) {
         User userToSave = new User();
         userToSave.setUsername(userDTO.getUsername());
         userToSave.setEmail(userDTO.getEmail());
         userToSave.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
-        userToSave.setEnabled(true);
+        userToSave.setEnabled(false);
         Role userRole = roleRepository.findByRole("ADMIN");
         userToSave.setRoles(new HashSet<>(List.of(userRole)));
         return userRepository.save(userToSave);
     }
 
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findUserByUsername(username);
+        User user = findUserByUsername(username);
         if (user != null) {
             List<GrantedAuthority> authorities = getUserAuthority(user.getRoles());
             return buildUserForAuthentication(user, authorities);
@@ -64,6 +69,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public User findUserByUsername(String username) {
         return userRepository.findUserByUsername(username);
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 
     private List<GrantedAuthority> getUserAuthority(Set<Role> userRoles) {
@@ -77,6 +86,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private UserDetails buildUserForAuthentication(User user, List<GrantedAuthority> authorities) {
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 }

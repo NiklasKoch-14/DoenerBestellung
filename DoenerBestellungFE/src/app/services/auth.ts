@@ -12,7 +12,7 @@ const apiUrl = 'http://localhost:8080/api/auth/';
 export class Auth {
 
   isLoggedIn = false;
-  currentUser?: string;
+  currentUsername: string | undefined;
   redirectUrl: string | undefined;
 
   private http = inject(HttpClient);
@@ -24,9 +24,6 @@ export class Auth {
         tap(res => {
           this.isLoggedIn = true;
           console.log("LoggedIn ", this.isLoggedIn);
-          if(res.username) {
-            this.currentUser = res.username;
-          }
         }),
         catchError(this.handleError('login', []))
       );
@@ -38,6 +35,8 @@ export class Auth {
         tap(_ => {
           this.isLoggedIn = false;
           console.log("LoggedIn ", this.isLoggedIn);
+          this.currentUsername = undefined;
+          console.log("removed currentUsername")
           sessionStorage.clear();
           console.log("removed token")
         }),
@@ -61,8 +60,8 @@ export class Auth {
       );
   }
 
-  getCurrentUser(): string | undefined {
-    return this.currentUser;
+  getCurrentUsername(): string | undefined {
+    return this.currentUsername;
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

@@ -9,8 +9,10 @@ import { httpInterceptorProvider } from './interceptors';
 
 import { routes } from './app.routes';
 import {Observable} from 'rxjs';
-import {Auth} from './auth';
-import {authGuard} from './auth/auth-guard';
+import {Auth} from './services/auth';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
+import {providePrimeNG} from 'primeng/config';
+import Aura from '@primeuix/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,6 +21,12 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     httpInterceptorProvider,
+    provideAnimationsAsync(),
+    providePrimeNG({
+      theme: {
+        preset: Aura
+      }
+    })
   ]
 };
 

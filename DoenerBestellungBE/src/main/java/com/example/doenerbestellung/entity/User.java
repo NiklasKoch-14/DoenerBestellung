@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -31,6 +32,11 @@ public class User {
     private String password;
     private String email;
     private boolean enabled;
+    private String paypal;
+    @ManyToOne
+    @JoinColumn(name = "default_order_id")
+    private Order defaultOrder;
+
 
     @JsonManagedReference
     @ManyToMany(fetch = FetchType.EAGER)
@@ -49,6 +55,8 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", enabled=" + enabled +
+                ", paypal='" + paypal + '\'' +
+                ", defaultOrder=" + defaultOrder +
                 ", roles=" + roles +
                 '}';
     }

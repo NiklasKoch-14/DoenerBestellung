@@ -1,5 +1,65 @@
-@for (row of data | async; track row) {
-  <div>{{row.name}}</div>
-  <div>{{row.price}}</div>
-}
-<div (click)="logout()">Logout</div>
+<p-button (click)="logout()">Logout</p-button>
+<p-button (click)="order()">Order</p-button>
+
+<p-splitter class="mb-8">
+  <ng-template #panel>
+    <div>Menü</div>
+    <p-table [value]="(products | async)!"
+             [paginator]="true"
+             [rows]="20"
+             [rowsPerPageOptions]="[5, 10, 20]">
+      <ng-template #header>
+        <tr>
+          <th>Name</th>
+          <th>Beschreibung</th>
+          <th>Kategorie</th>
+          <th>Preis</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-product>
+        <tr [pSelectableRow]="product" (click)="onRowSelectAdd(product)">
+          <td>{{product.name}}</td>
+          <td>{{product.description}}</td>
+          <td>{{product.categoryName}}</td>
+          <td>{{product.price}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
+  <ng-template #panel>
+    <div class="flex items-center justify-center h-full">
+      @if(selectedProducts.length > 0) {
+        <div>Selektierte Produkte <p-button label="Standard Bestellung Speichern" (onClick)="saveDefaultProducts(selectedProducts)"></p-button>
+          @if(savedOrderId){
+            <p>{{ savedOrderId }}</p>
+          }
+        </div>
+        <p-table [value]="selectedProducts" dataKey="code"
+                 [paginator]="true"
+                 [rows]="20"
+                 [rowsPerPageOptions]="[5, 10, 20]">
+          <ng-template #header>
+            <tr>
+              <th>Name</th>
+              <th>Beschreibung</th>
+              <th>Kategorie</th>
+              <th>Preis</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-product>
+            <tr [pSelectableRow]="product" (click)="onRowUnselect(product)">
+              <td>{{product.name}}</td>
+              <td>{{product.description}}</td>
+              <td>{{product.categoryName}}</td>
+              <td>{{product.price}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      }
+    </div>
+  </ng-template>
+</p-splitter>
+
+
+
+
